@@ -2,7 +2,7 @@ import time
 from tkinter.font import names
 import allure
 from pages.base_page import BasePage
-
+import random
 
 
 class TextBoxesPage(BasePage):
@@ -30,4 +30,116 @@ class TextBoxesPage(BasePage):
             email = self.page.locator('#email').text_content()
             current_address = self.page.locator("//p[@id='currentAddress']").text_content()
             permanent_address = self.page.locator("//p[@id='permanentAddress']").text_content()
-        return name.split(':')[1], email.split(':')[1], current_address.split(':')[1].rstrip(), permanent_address.split(':')[1]
+        return name.split(':')[1], email.split(':')[1], current_address.split(':')[1], permanent_address.split(':')[1]
+
+    @allure.step('get error message')
+    def get_error(self):
+        with allure.step('Get Error'):
+            error = self.page.locator("xpath=//div[contains(@class, 'mr-sm-2 field-error form-control')]").is_visible()
+            return error
+
+
+class CheckBoxPage(BasePage):
+
+    @allure.step('Open Full List')
+    def click_on_open_full_list_button(self):
+        with allure.step('Open Full List'):
+            self.page.get_by_title('Expand all').click()
+
+    @allure.step('Click on Checkbox')
+    def click_on_check_box(self):
+        item_list = self.page.locator("span[class='rct-title']").element_handles()
+        count = 21
+        while count != 0:
+            item = item_list[random.randint(1, 15)]
+            if count > 0:
+                item.click()
+                count -= 1
+            else:
+                break
+
+    @allure.step('get checked checkboxes')
+    def get_checked_checkboxes(self):
+        checked_list = self.page.locator("svg[class='rct-icon rct-icon-check']").element_handles()
+        data = []
+        for box in checked_list:
+            title_item = box.query_selector("xpath=ancestor::span[contains(@class, 'rct-text')]")
+            if title_item:
+                data.append(title_item.inner_text())
+        return str(data).replace(' ', '').replace('doc', '').replace('.', '').lower()
+
+    @allure.step('get output result')
+    def get_output_result(self):
+        result_list = self.page.locator("span[class='text-success']").element_handles()
+        data = []
+        for item in result_list:
+            data.append(item.inner_text())
+        return str(data).replace(' ', '').lower()
+
+
+class RadioButtonPage(BasePage):
+
+    @allure.step('Click radio button')
+    def click_on_radio_button(self, radio_button):
+        with allure.step('Click on Radio Button'):
+            radio_buttons = {"yes": 'yes',
+                            "impressive": 'impressive',
+                            "no": 'no'
+                            }
+            self.page.get_by_text(radio_buttons[radio_button]).click()
+
+    @allure.step('Get Result')
+    def get_result(self):
+        result = self.page.locator("span[class='text-success']").text_content().lower()
+        return result
+
+
+class WebTablesPage(BasePage):
+
+    @allure.step('Click Add button')
+    def click_add_button(self):
+        with allure.step('Click Add button'):
+            self.page.locator('#addNewRecordButton').click()
+
+    @allure.step('Create Person')
+    def fill_person_inputs(self, first_name, last_name, email, age, salary, department):
+
+        with allure.step('fill inputs'):
+            self.page.locator("input[placeholder='First Name']").fill(first_name)
+            self.page.locator("input[placeholder='Last Name']").fill(last_name)
+            self.page.locator("input[placeholder='name@example.com']").fill(email)
+            self.page.locator("input[placeholder='Age']").fill(age)
+            self.page.locator("input[placeholder='Salary']").fill(salary)
+            self.page.locator("input[placeholder='Department']").fill(department)
+        with allure.step('Click Submit button'):
+            self.page.locator('#submit').click()
+
+    @allure.step('Click Edit Button')
+    def click_edit_button(self):
+        with allure.step('Click Edit button'):
+            self.page.locator("span[title='Edit']").click()
+
+    @allure.step('Get Result')
+    def get_result(self):
+        first_name = self.page.locator(".rt-tr-group").first.locator("div.rt-td").nth(0).inner_text()
+        last_name = self.page.locator(".rt-tr-group").first.locator("div.rt-td").nth(1).inner_text()
+        email = self.page.locator(".rt-tr-group").first.locator("div.rt-td").nth(2).inner_text()
+        age = self.page.locator(".rt-tr-group").first.locator("div.rt-td").nth(3).inner_text()
+        salary = self.page.locator(".rt-tr-group").first.locator("div.rt-td").nth(4).inner_text()
+        department = self.page.locator(".rt-tr-group").first.locator("div.rt-td").nth(5).inner_text()
+        return first_name, last_name, email, age, salary, department
+
+    @allure.step('Search')
+    def search(self, search):
+        with allure.step('Use Search'):
+            self.page.locator("input[placeholder='Type to search']").fill(search)
+
+    @allure.step('Delete Person')
+    def delete_person(self):
+        with allure.step('Click Delete button'):
+            self.page.locator("span[title='Delete']").click()
+
+    @allure.step('Check Deleted Person')
+    def check_deleted_person(self):
+        no_result_message = self.page.locator("div[class='rt-noData']").text_content()
+        return no_result_message

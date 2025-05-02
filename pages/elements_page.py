@@ -143,3 +143,21 @@ class WebTablesPage(BasePage):
     def check_deleted_person(self):
         no_result_message = self.page.locator("div[class='rt-noData']").text_content()
         return no_result_message
+
+
+class ButtonsPage(BasePage):
+
+    @allure.step('Click button')
+    def click_button(self, button_type: str = "single"):
+        with allure.step(f'Click "{button_type}" button'):
+            if button_type == "double":
+                self.page.locator('#doubleClickBtn').dblclick()
+                return self.page.locator('#doubleClickMessage').text_content()
+            elif button_type == "right":
+                self.page.locator('#rightClickBtn').click(button="right")
+                return self.page.locator('#rightClickMessage').text_content()
+            elif button_type == "single":
+                self.page.locator("button[class='btn btn-primary']").nth(2).click()
+                return self.page.locator('#dynamicClickMessage').text_content()
+            else:
+                raise ValueError(f"Unsupported button_type: {button_type}")

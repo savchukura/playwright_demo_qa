@@ -1,6 +1,6 @@
 import time
 from playwright.sync_api import Page
-from pages.elements_page import TextBoxesPage, CheckBoxPage, RadioButtonPage, WebTablesPage
+from pages.elements_page import TextBoxesPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage
 from generator.generator import generated_person
 import allure
 import pytest
@@ -103,3 +103,23 @@ class TestElements:
             web_tables_page.delete_person()
             text = web_tables_page.check_deleted_person()
             assert text == 'No rows found'
+
+
+    @allure.feature("Buttons Page")
+    class TestButtons:
+
+        @pytest.mark.parametrize(
+            'button,result',
+            [
+                ('double', 'You have done a double click'),
+                ('right', 'You have done a right click'),
+                ('single', 'You have done a dynamic click')
+            ]
+        )
+        @allure.title('Click button: {button}')
+        def test_click_button(self, page, button, result):
+            page.goto('https://demoqa.com/buttons')
+            buttons_page = ButtonsPage(page)
+            message = buttons_page.click_button(button)
+            assert message == result
+

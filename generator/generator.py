@@ -3,6 +3,7 @@ from data.data import Person
 from faker import Faker
 faker_en = Faker()
 Faker.seed()
+import os
 
 def generated_person():
     yield Person(
@@ -17,3 +18,10 @@ def generated_person():
         permanent_address=faker_en.address(),
         mobile=faker_en.msisdn()
     )
+
+def generated_file():
+    path = os.path.abspath(f"../test{random.randint(0, 999)}.txt")
+    file = open(path, 'w+')
+    file.write(f'Hello world{random.randint(0, 999)}')
+    file.close()
+    return file.name, path

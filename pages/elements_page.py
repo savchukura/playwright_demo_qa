@@ -3,6 +3,9 @@ from tkinter.font import names
 import allure
 from pages.base_page import BasePage
 import random
+import os
+import base64
+from generator.generator import generated_person, generated_file
 
 
 class TextBoxesPage(BasePage):
@@ -30,7 +33,7 @@ class TextBoxesPage(BasePage):
             email = self.page.locator('#email').text_content()
             current_address = self.page.locator("//p[@id='currentAddress']").text_content()
             permanent_address = self.page.locator("//p[@id='permanentAddress']").text_content()
-        return name.split(':')[1], email.split(':')[1], current_address.split(':')[1], permanent_address.split(':')[1]
+        return name.split(':')[1].strip(), email.split(':')[1].strip(), current_address.split(':')[1].strip(), permanent_address.split(':')[1].strip()
 
     @allure.step('get error message')
     def get_error(self):
@@ -86,7 +89,7 @@ class RadioButtonPage(BasePage):
                             "impressive": 'impressive',
                             "no": 'no'
                             }
-            self.page.get_by_text(radio_buttons[radio_button]).click()
+            self.page.get_by_text(radio_buttons[radio_button]).click(timeout=5000)
 
     @allure.step('Get Result')
     def get_result(self):
@@ -161,3 +164,29 @@ class ButtonsPage(BasePage):
                 return self.page.locator('#dynamicClickMessage').text_content()
             else:
                 raise ValueError(f"Unsupported button_type: {button_type}")
+
+
+class UploadAndDownloadPage(BasePage):
+
+    @allure.step('Download file')
+    def download_file(self):
+        with allure.step('Download file'):
+            link = self.page.locator('#downloadButton').get_attribute('href')
+            link_b = base64.b64decode(link)
+            path_name_file = os.path.abspath(f'../tests{random.randint(0, 999)}.jpeg')
+            with open(path_name_file, 'wb+') as f:
+                offset = link_b.find(b'\xff\xd8')
+                f.write(link_b[offset:])
+                check_file = os.path.exists(path_name_file)
+                f.close()
+            os.remove(path_name_file)
+            return check_file
+
+    @allure.step('Upload file')
+    def upload_file(self):
+        with allure.step('Upload File'):
+            file_name, path = generated_file()
+            self.page.locator("#uploadFile").set_input_files(path)
+            os.remove(path)
+            text = self.page.locator('#uploadedFilePath').text_content()
+            return file_name.split('\\')[-1], text.split('\\')[-1]

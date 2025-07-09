@@ -1,6 +1,6 @@
 import time
 from playwright.sync_api import Page
-from pages.elements_page import TextBoxesPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage
+from pages.elements_page import TextBoxesPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, UploadAndDownloadPage
 from generator.generator import generated_person
 import allure
 import pytest
@@ -123,3 +123,20 @@ class TestElements:
             message = buttons_page.click_button(button)
             assert message == result
 
+
+    @allure.feature('Download and up;oad Page')
+    class TestDownloadAndUpload:
+
+        @allure.title('Download File')
+        def test_download_file(self, page):
+            page.goto('https://demoqa.com/upload-download')
+            dau_page = UploadAndDownloadPage(page)
+            check = dau_page.download_file()
+            assert check is True, "File has not been downloaded"
+
+        @allure.title('Upload File')
+        def test_upload_file(self, page):
+            page.goto('https://demoqa.com/upload-download')
+            dau_page = UploadAndDownloadPage(page)
+            file_name, result = dau_page.upload_file()
+            assert file_name == result, "File has not been uploaded"

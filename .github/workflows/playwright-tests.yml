@@ -1,0 +1,44 @@
+# Назва вашого автоматичного процесу
+name: Playwright Tests
+
+# Умови запуску:
+# - Коли відбувається push у гілку 'main'
+# - Коли створюється Pull Request до гілки 'main'
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Завдання, які будуть виконуватись
+jobs:
+  test:
+    # Вказуємо операційну систему для запуску
+    runs-on: ubuntu-latest
+
+    # Кроки, які виконуватимуться послідовно
+    steps:
+      # 1. Клонуємо репозиторій, щоб мати доступ до коду
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Встановлюємо Python вказаної версії
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Вкажіть вашу версію Python
+
+      # 3. Встановлюємо залежності проєкту
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright pytest pytest-playwright
+          pip install -r requirements.txt # Переконайтесь, що у вас є цей файл
+
+      # 4. Встановлюємо браузери для Playwright
+      - name: Install Playwright browsers
+        run: playwright install chromium --with-deps # --with-deps встановить залежності для Linux
+
+      # 5. Запускаємо тести за допомогою pytest
+      - name: Run Playwright tests
+        run: pytest # Або ваша команда, наприклад, 'python -m pytest'

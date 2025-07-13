@@ -45,11 +45,13 @@ jobs:
       - name: Install Playwright browsers
         run: playwright install chromium --with-deps # --with-deps встановить залежності для Linux
 
-      - name: Install Allure CLI
+      - name: Install Allure CLI manually
         run: |
-            sudo apt-add-repository --yes ppa:qameta/allure
-            sudo apt-get update
-            sudo apt-get install allure
+            curl -o allure.tgz -L https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+            tar -zxvf allure.tgz
+            sudo mv allure-2.27.0 /opt/allure
+            sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+            allure --version
 
       # 5. Запускаємо тести з генерацією результатів Allure
       - name: Run Playwright tests

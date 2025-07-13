@@ -40,15 +40,15 @@ jobs:
       - name: Install Playwright browsers
         run: playwright install chromium --with-deps # --with-deps встановить залежності для Linux
 
-      # 6. Запускаємо тести з генерацією результатів Allure
+      # 5. Запускаємо тести з генерацією результатів Allure
       - name: Run Playwright tests
         run: pytest --alluredir=allure-results
 
-      # 7. Генеруємо HTML-звіт Allure з отриманих результатів
+      # 6. Генеруємо HTML-звіт Allure з отриманих результатів
       - name: Generate Allure report
         run: allure generate allure-results --clean -o allure-report
 
-      # 8. Завантажуємо звіт як артефакт для GitHub Pages
+      # 7. Завантажуємо звіт як артефакт для GitHub Pages
       - name: Upload Allure report artifact
         uses: actions/upload-pages-artifact@v3
         with:

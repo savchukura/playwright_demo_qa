@@ -34,7 +34,7 @@ jobs:
 
       # 3. Встановлюємо Allure CLI (необхідний для генерації HTML-звіту)
       - name: Set up Allure
-        uses: allure-framework/allure-action@v2
+        uses: allure-framework/setup-allure@v3
 
       # 4. Встановлюємо залежності проєкту
       - name: Install Python dependencies

@@ -75,8 +75,6 @@ jobs:
     name: Deploy Allure report to GitHub Pages
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
-      # Публікуємо артефакт на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4

@@ -10,20 +10,28 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 # Завдання, які будуть виконуватись
 jobs:
   test:
+    # Вказуємо операційну систему для запуску
     runs-on: ubuntu-latest
+
+    # Кроки, які виконуватимуться послідовно
     steps:
-      # 1. Клонуємо репозиторій
+      # 1. Клонуємо репозиторій, щоб мати доступ до коду
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Встановлюємо Python
+      # 2. Встановлюємо Python вказаної версії
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.11' # Вкажіть вашу версію Python
 
       # 3. Встановлюємо залежності проєкту
       - name: Install Python dependencies
@@ -33,30 +41,28 @@ jobs:
           pip install -r requirements.txt
           pip install allure-pytest
 
-      # 4. Встановлюємо Allure Commandline  <--- НОВИЙ ВАЖЛИВИЙ КРОК
-      - name: Install Allure Commandline
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openjdk-11-jre  # Allure потребує Java
-          sudo wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure_2.29.0-1_all.deb
-          sudo dpkg -i allure_2.29.0-1_all.deb
-          allure --version # Перевіряємо, чи команда доступна
-
-      # 5. Встановлюємо браузери для Playwright
+      # 4. Встановлюємо браузери для Playwright
       - name: Install Playwright browsers
-        run: playwright install chromium --with-deps
+        run: playwright install chromium --with-deps # --with-deps встановить залежності для Linux
 
-      # 6. Запускаємо тести з генерацією результатів Allure
+      - name: Install Allure CLI
+        run: |
+            sudo apt-add-repository --yes ppa:qameta/allure
+            sudo apt-get update
+            sudo apt-get install allure
+
+      # 5. Запускаємо тести з генерацією результатів Allure
       - name: Run Playwright tests
         run: pytest --alluredir=allure-results
-        # Якщо тести падають і ви все одно хочете звіт, додайте:
-        # continue-on-error: true
 
-      # 7. Генеруємо HTML-звіт Allure з отриманих результатів
+      - name: Check Allure results exist
+        run: ls -la allure-results
+
+      # 6. Генеруємо HTML-звіт Allure з отриманих результатів
       - name: Generate Allure report
         run: allure generate allure-results --clean -o allure-report
 
-      # 8. Завантажуємо звіт як артефакт
+      # 7. Завантажуємо звіт як артефакт для GitHub Pages
       - name: Upload Allure report artifact
         uses: actions/upload-pages-artifact@v3
         with:

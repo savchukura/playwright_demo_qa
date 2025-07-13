@@ -189,4 +189,4 @@ class UploadAndDownloadPage(BasePage):
             self.page.locator("#uploadFile").set_input_files(path)
             os.remove(path)
             text = self.page.locator('#uploadedFilePath').text_content()
-            return file_name.split('\\')[-1], text.split('\\')[-1]
+            return file_name.split('/')[-1], text.split('/')[-1]

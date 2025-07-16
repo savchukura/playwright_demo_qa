@@ -56,8 +56,10 @@ jobs:
       # 5. Запускаємо тести з генерацією результатів Allure
       - name: Run Playwright tests
         id: tests
+        continue-on-error: true
         run: |
-            pytest --alluredir=allure-results || true
+            pytest --alluredir=allure-results
+            echo "exit_code=$?" >> $GITHUB_OUTPUT
 
       - name: Check Allure results exist
         run: ls -la allure-results
@@ -72,6 +74,12 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
+
+      - name: Fail job if tests failed
+        if: steps.tests.outputs.exit_code != '0'
+        run: |
+            echo "Some tests failed"
+            exit 1
 
   # Завдання для публікації звіту
   deploy:

@@ -21,7 +21,7 @@ def browser() -> Generator[Browser, None, None]:
         "--disable-glsl-translator"
     ]
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False, args=chrome_options)  # З headless=True для безголового режиму
+        browser = p.chromium.launch(headless=True, args=chrome_options)  # З headless=True для безголового режиму
         yield browser
         browser.close()
 

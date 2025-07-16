@@ -1,6 +1,8 @@
 from typing import Generator, Any
 import pytest
+import logging
 import allure
+import os
 from playwright.sync_api import Playwright, sync_playwright, Browser, BrowserContext, Page, expect
 
 @pytest.fixture(scope="session")
@@ -49,13 +51,21 @@ def page(context: BrowserContext) -> Generator[Page, None, None]:
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """ Додає скріншот у Allure, якщо тест провалився """
+    """Додає скріншот у Allure, якщо тест провалився"""
     outcome = yield
     report = outcome.get_result()
 
-    if report.when == "call" and report.failed:  # Тест падає тільки на етапі виконання
-        page = item.funcargs.get("page", None)  # Отримуємо Playwright `page`
-        if page:
-            screenshot_path = "../tests/results/allure-results/screenshot.png"
-            page.screenshot(path=screenshot_path)  # Зберігаємо скріншот
-            allure.attach.file(screenshot_path, name="Failure Screenshot", attachment_type=allure.attachment_type.PNG)
+    if report.when == "call" and report.failed:
+        page = item.funcargs.get("page", None)
+
+        if page and not page.is_closed():
+            try:
+                screenshot_dir = os.path.join(os.path.dirname(__file__), "results", "allure-results")
+                os.makedirs(screenshot_dir, exist_ok=True)
+
+                screenshot_path = os.path.join(screenshot_dir, f"{item.name}.png")
+                page.screenshot(path=screenshot_path)
+                allure.attach.file(screenshot_path, name="Failure Screenshot", attachment_type=allure.attachment_type.PNG)
+
+            except Exception as e:
+                logging.warning(f"Could not take or attach screenshot for failed test: {e}")

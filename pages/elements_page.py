@@ -1,6 +1,10 @@
 import time
 from tkinter.font import names
+from xml.sax.xmlreader import Locator
+
 import allure
+from playwright.sync_api import expect
+
 from pages.base_page import BasePage
 import random
 import os
@@ -189,4 +193,17 @@ class UploadAndDownloadPage(BasePage):
             self.page.locator("#uploadFile").set_input_files(path)
             os.remove(path)
             text = self.page.locator('#uploadedFilePath').text_content()
-            return file_name.split('\\')[-1], text.split('\\')[-1]
+            return file_name.split('/')[-1], text.split('\\')[-1]
+
+
+class DynamicPropertiesPage(BasePage):
+
+    @allure.step('Get 5 seconds enable button')
+    def get_enable_button_after_five_seconds(self):
+        with allure.step('Get 5 seconds enable button'):
+            return self.page.locator('#enableAfter')
+
+    @allure.step('Get visible after 5 second button')
+    def get_visible_after_button(self):
+        with allure.step('Get visible after 5 second button'):
+            return self.page.locator('#visibleAfter')

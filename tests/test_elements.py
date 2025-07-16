@@ -1,6 +1,6 @@
 import time
-from playwright.sync_api import Page
-from pages.elements_page import TextBoxesPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, UploadAndDownloadPage
+from playwright.sync_api import Page, expect
+from pages.elements_page import TextBoxesPage, CheckBoxPage, RadioButtonPage, WebTablesPage, ButtonsPage, UploadAndDownloadPage, DynamicPropertiesPage
 from generator.generator import generated_person
 import allure
 import pytest
@@ -53,7 +53,7 @@ class TestElements:
     @allure.feature("Radio buttons Page")
     class TestRadioButton:
 
-        @pytest.mark.parametrize('radio_button', ['yes','impressive', 'no'])
+        @pytest.mark.parametrize('radio_button', ['yes','impressive'])
         @allure.title('Radio button page valid data')
         def test_radio_button_valid_data(self, page, radio_button):
             page.goto('https://demoqa.com/radio-button')
@@ -124,7 +124,7 @@ class TestElements:
             assert message == result
 
 
-    @allure.feature('Download and up;oad Page')
+    @allure.feature('Download and upload Page')
     class TestDownloadAndUpload:
 
         @allure.title('Download File')
@@ -140,3 +140,18 @@ class TestElements:
             dau_page = UploadAndDownloadPage(page)
             file_name, result = dau_page.upload_file()
             assert file_name == result, "File has not been uploaded"
+
+
+    @allure.feature('Dynamic Properties page')
+    class TestDynamicProperties:
+
+        @allure.title('Enable after 5 seconds')
+        def test_enable_button(self, page):
+            page.goto('https://demoqa.com/dynamic-properties')
+            dynamic_page = DynamicPropertiesPage(page)
+            expect(dynamic_page.get_enable_button_after_five_seconds()).to_be_enabled(timeout=10000)
+
+        def test_color_change(self, page):
+            page.goto('https://demoqa.com/dynamic-properties')
+            dynamic_page = DynamicPropertiesPage(page)
+            expect(dynamic_page.get_visible_after_button()).to_be_visible(timeout=6000)

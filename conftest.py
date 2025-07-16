@@ -1,7 +1,7 @@
 from typing import Generator, Any
 import pytest
 import allure
-from playwright.sync_api import Playwright, sync_playwright, Browser, BrowserContext, Page
+from playwright.sync_api import Playwright, sync_playwright, Browser, BrowserContext, Page, expect
 
 @pytest.fixture(scope="session")
 def browser() -> Generator[Browser, None, None]:
@@ -21,7 +21,7 @@ def browser() -> Generator[Browser, None, None]:
         "--disable-glsl-translator"
     ]
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, args=chrome_options)  # З headless=True для безголового режиму
+        browser = p.chromium.launch(headless=False, args=chrome_options)  # З headless=True для безголового режиму
         yield browser
         browser.close()
 

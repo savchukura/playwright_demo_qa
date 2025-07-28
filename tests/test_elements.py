@@ -56,6 +56,7 @@ class TestElements:
     class TestRadioButton:
 
         @pytest.mark.parametrize('radio_button', ['yes','impressive'])
+        @pytest.mark.ui
         @allure.title('Radio button page valid data')
         def test_radio_button_valid_data(self, page, base_url, radio_button):
             page.goto(base_url + '/radio-button')

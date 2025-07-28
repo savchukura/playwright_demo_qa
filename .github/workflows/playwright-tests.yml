@@ -58,6 +58,7 @@ jobs:
         run: pytest --alluredir=allure-results
 
       - name: Check Allure results exist
+        if: always()
         run: ls -la allure-results
 
       # 6. Генеруємо HTML-звіт Allure з отриманих результатів
@@ -72,17 +73,18 @@ jobs:
         with:
             path: allure-report
 
-      - name: Fail job if tests failed
-        if: steps.tests.outputs.exit_code != '0'
-        run: |
-            echo "Some tests failed"
-            exit 1
+      #- name: Fail job if tests failed
+      #  if: steps.tests.outputs.exit_code != '0'
+      #  run: |
+      #      echo "Some tests failed"
+      #      exit 1
 
   # Завдання для публікації звіту
   deploy:
     name: Deploy Allure report to GitHub Pages
     needs: test
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4

@@ -38,6 +38,7 @@ def context(browser: Browser) -> Generator[BrowserContext, None, None]:
     yield context
     context.close()
 
+
 @pytest.fixture(scope="function")
 def page(context: BrowserContext) -> Generator[Page, None, None]:
     """

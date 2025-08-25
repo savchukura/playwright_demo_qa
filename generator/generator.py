@@ -16,11 +16,19 @@ def generated_person():
         email=faker_en.email(),
         current_address=faker_en.address(),
         permanent_address=faker_en.address(),
-        mobile=faker_en.msisdn()
+        #mobile=faker_en.msisdn()
+        mobile=str(random.randint(1000000000, 9999999999))
     )
 
 def generated_file():
     path = os.path.abspath(f"../test{random.randint(0, 999)}.txt")
+    file = open(path, 'w+')
+    file.write(f'Hello world{random.randint(0, 999)}')
+    file.close()
+    return file.name, path
+
+def generated_image():
+    path = os.path.abspath(f"../test{random.randint(0, 999)}.png")
     file = open(path, 'w+')
     file.write(f'Hello world{random.randint(0, 999)}')
     file.close()

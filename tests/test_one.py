@@ -1,6 +1,8 @@
 import time
 from playwright.sync_api import Page
 from pages.elements_page import TextBoxesPage
+
+from pages.forms_page import FormsPage
 from generator.generator import generated_person
 import allure
 import pytest
@@ -35,3 +37,10 @@ class TestCreating:
             assert result_email == email
             assert result_current_address == current_address
             assert result_permanent_address == permanent_address
+
+        def test_two(self, page):
+            page.goto('https://demoqa.com/automation-practice-form')
+            forms_page = FormsPage(page)
+            file = forms_page.upload_image()
+            print(file)
+            time.sleep(5)

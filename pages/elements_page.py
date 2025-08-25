@@ -186,15 +186,6 @@ class UploadAndDownloadPage(BasePage):
             os.remove(path_name_file)
             return check_file
 
-    @allure.step('Upload file')
-    def upload_file(self):
-        with allure.step('Upload File'):
-            file_name, path = generated_file()
-            self.page.locator("#uploadFile").set_input_files(path)
-            os.remove(path)
-            text = self.page.locator('#uploadedFilePath').text_content()
-            return file_name.split('/')[-1], text.split('\\')[-1]
-
 
 class DynamicPropertiesPage(BasePage):
 

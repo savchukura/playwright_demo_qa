@@ -81,6 +81,7 @@ class TestElements:
             assert result == (person.firstname, person.lastname, str(person.age), person.email, str(person.salary), person.department)
 
         def test_edit_person(self, page, base_url):
+
             page.goto(base_url + '/webtables')
             web_tables_page = WebTablesPage(page)
             person = next(generated_person())

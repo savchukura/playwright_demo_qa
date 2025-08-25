@@ -41,4 +41,4 @@ class TestFormsPage:
         assert person.current_address.replace('\n', ' ') == results[8]
         assert state in results[9]
         assert city in results[9]
-        time.sleep(1)
+

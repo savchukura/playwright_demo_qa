@@ -45,10 +45,14 @@ class FormsPage(BasePage):
 
     @allure.step('Fill subjects')
     def fill_subjects(self, subject):
+        input_field = self.page.locator("input[id='subjectsInput']")
+
         with allure.step('Fill subjects'):
-            self.page.locator("input[id='subjectsInput']").fill(subject)
+            input_field.fill(subject)
+
+            self.page.wait_for_selector(f"text={subject}", state="visible")
+
             self.page.keyboard.press("ArrowDown")
-            time.sleep(1)
             self.page.keyboard.press("Enter")
 
     @allure.step('Choose hobbies')

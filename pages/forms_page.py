@@ -1,6 +1,7 @@
 import allure
 from pages.base_page import BasePage
 import random
+import time
 
 
 class FormsPage(BasePage):
@@ -47,6 +48,7 @@ class FormsPage(BasePage):
         with allure.step('Fill subjects'):
             self.page.locator("input[id='subjectsInput']").fill(subject)
             self.page.keyboard.press("ArrowDown")
+            time.sleep(1)
             self.page.keyboard.press("Enter")
 
     @allure.step('Choose hobbies')

@@ -16,18 +16,22 @@ class TextBoxesPage(BasePage):
 
     @allure.step('Fill all inputs')
     def write_all_inputs(self, name, email, current_address, permanent_address):
+        user_name_input = self.page.locator('#userName')
+        user_email_input = self.page.locator('#userEmail')
+        current_address_textarea = self.page.locator('#currentAddress')
+        permanent_address_textarea = self.page.locator('#permanentAddress')
         with allure.step('Fill User Name'):
-            self.page.locator('#userName').fill(name)
-            time.sleep(0.5)
+            expect(user_name_input).to_be_visible()
+            user_name_input.fill(name)
         with allure.step('Fill User Email'):
-            self.page.locator('#userEmail').fill(email)
-            time.sleep(0.5)
+            expect(user_email_input).to_be_visible()
+            user_email_input.fill(email)
         with allure.step('Fill User Current Address'):
-            self.page.locator('#currentAddress').fill(current_address)
-            time.sleep(0.5)
+            expect(current_address_textarea).to_be_visible()
+            current_address_textarea.fill(current_address)
         with allure.step('Fill User Permanent Address'):
-            self.page.locator('#permanentAddress').fill(permanent_address)
-            time.sleep(0.5)
+            expect(permanent_address_textarea).to_be_visible()
+            permanent_address_textarea.fill(permanent_address)
 
     @allure.step('Click submit button')
     def click_text_submit_button(self):

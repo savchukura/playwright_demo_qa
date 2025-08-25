@@ -18,12 +18,16 @@ class TextBoxesPage(BasePage):
     def write_all_inputs(self, name, email, current_address, permanent_address):
         with allure.step('Fill User Name'):
             self.page.locator('#userName').fill(name)
+            time.sleep(0.5)
         with allure.step('Fill User Email'):
             self.page.locator('#userEmail').fill(email)
+            time.sleep(0.5)
         with allure.step('Fill User Current Address'):
             self.page.locator('#currentAddress').fill(current_address)
+            time.sleep(0.5)
         with allure.step('Fill User Permanent Address'):
             self.page.locator('#permanentAddress').fill(permanent_address)
+            time.sleep(0.5)
 
     @allure.step('Click submit button')
     def click_text_submit_button(self):
